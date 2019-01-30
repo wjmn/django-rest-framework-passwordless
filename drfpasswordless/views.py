@@ -136,8 +136,15 @@ class AbstractBaseObtainAuthToken(APIView):
                 user.save()
 
             if token:
+                content = {
+                    'username': getattr(user, "username"),
+                    'email': getattr(user, "email"),
+                    'first_name': getattr(user, "first_name"),
+                    'last_name': getattr(user, "last_name"),
+                    'token': token.key
+                }
                 # Return our key for consumption.
-                return Response({'token': token.key}, status=status.HTTP_200_OK)
+                return Response(content, status=status.HTTP_200_OK)
         else:
             logger.error("Couldn't log in unknown user. Errors on serializer: {}".format(serializer.error_messages))
         return Response({'detail': 'Couldn\'t log you in. Try again later.'}, status=status.HTTP_400_BAD_REQUEST)
